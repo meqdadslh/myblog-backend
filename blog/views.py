@@ -1,58 +1,69 @@
-from django.shortcuts import render, HttpResponse
+# from django.shortcuts import render, HttpResponse
 from .models import Article
 from .serializers import ArticleSerializer
-from django.http import JsonResponse
-from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import APIView
-from rest_framework import generics
+# from django.http import JsonResponse
+# from rest_framework.parsers import JSONParser
+# from rest_framework.decorators import api_view
+# from rest_framework.response import Response
+# from rest_framework import status
+# from rest_framework.decorators import APIView
+from rest_framework import generics, serializers
 from rest_framework import mixins
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 
+# /////////////MODEL VIEWSets//////////FIRST AND BEST//////////
+# this method builds all the CRUD functions for you itself. 
 
-# ////////Generic APIView & Mixins///////FIRST AND BEST WAY////////
-
-
-class ArticleList(generics.GenericAPIView,mixins.ListModelMixin, mixins.CreateModelMixin):
+class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
-
-    # Getting the list of all the articles
-    def get(self, request):
-        return self.list(request)
-
-    # Adding article 
-    def post(self, request):
-        return self.create(request)
+    authentication_classes = (TokenAuthentication,)
 
 
-# Creating the specific model where you can look for an article by id, updating and removing the artiles. but first we need to add all the mixins inside the artcialedetails class
 
-class ArticleDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
-
-
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
-
-    # After running the details functions getting an error of using pk. we can fix that by adding the lookup_field=id
-    lookup_field = 'id'
+# ////////Generic APIView & Mixins///////FOURTH WAY////////
 
 
-    # LOOK for an article by ID
-    def get(self,request,id):
-        return self.retrieve(request, id=id)
+# class ArticleList(generics.GenericAPIView,mixins.ListModelMixin, mixins.CreateModelMixin):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+#     # Getting the list of all the articles
+#     def get(self, request):
+#         return self.list(request)
+
+#     # Adding article 
+#     def post(self, request):
+#         return self.create(request)
 
 
-    # UPDATING an article
-    def put(self, request, id):
-        return self.update(request, id=id)
+# # Creating the specific model where you can look for an article by id, updating and removing the artiles. but first we need to add all the mixins inside the artcialedetails class
+
+# class ArticleDetails(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
 
 
-    # DELETING and article
-    def delete(self, request, id):
-        return self.destroy(request, id=id)
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+#     # After running the details functions getting an error of using pk. we can fix that by adding the lookup_field=id
+#     lookup_field = 'id'
+
+
+#     # LOOK for an article by ID
+#     def get(self,request,id):
+#         return self.retrieve(request, id=id)
+
+
+#     # UPDATING an article
+#     def put(self, request, id):
+#         return self.update(request, id=id)
+
+
+#     # DELETING and article
+#     def delete(self, request, id):
+#         return self.destroy(request, id=id)
 
 # ///////////Class Based API Views///////SECOND WAY//////////
 
